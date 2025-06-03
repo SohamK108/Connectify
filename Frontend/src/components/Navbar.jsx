@@ -27,10 +27,12 @@ const Navbar = () => {
         <Settings className='size-8'  />
         {/* <span className='text-md lg:text-xl'>Settings</span> */}
         </div>
+        <Link to="/profile">
         <div className='flex gap-2 items-center  rounded-xl p-3 cursor-pointer'>
         <User className='size-8 cursor-pointer'/>
         {/* <span className='text-md lg:text-xl'>Profile</span> */}
         </div>
+        </Link>
           <div className='flex gap-2 items-center  rounded-xl p-3 cursor-pointer'>
         <LogOut className='size-8 cursor-pointer' onClick={logout} />
         {/* <span className='text-md lg:text-xl'>Logout</span> */}

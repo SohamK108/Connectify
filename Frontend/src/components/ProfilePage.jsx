@@ -1,7 +1,11 @@
 import { User,Mail, AtSign,Camera, RefreshCcw} from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import "../index.css"
+import { axiosInstance } from "../lib/axios";
+import { useAuthStore } from "../store/useAuthStore";
+
+
 const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -28,10 +32,13 @@ const ProfilePage = () => {
 
    const [rotating, setRotating] = useState(false);
 
-  const handleClick = () => {
+  const {authUser,setRandomAvatar}=useAuthStore();
+  
+  const handleProfilePhotochange = () => {
     if (rotating) return; // Prevent multiple clicks while rotating
     setRotating(true);
-    // Stop rotating after 1s (duration of animation)
+    setRandomAvatar();
+        // Stop rotating after 250ms (duration of animation)
     setTimeout(() => setRotating(false), 250);
     // Place your refresh logic here
   };
@@ -48,7 +55,7 @@ const ProfilePage = () => {
         <div className="flex items-center justify-center relative">
           <div className="flex-col items-center justify-center">
           <img
-            src="https://imgs.search.brave.com/olU1frCI_rKOD3-NBWDPcqTpdn8YDMNYb2wVQ2TmqlM/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAzLzQ2LzgzLzk2/LzM2MF9GXzM0Njgz/OTY4M182bkFQemJo/cFNrSXBiOHBtQXd1/ZmtDN2M1ZUQ3d1l3/cy5qcGc"
+            src="https://api.dicebear.com/9.x/avataaars/svg?seed=5ZlleHN9gjvhvvj"
             alt="Profile"
             className="w-24 h-24 rounded-full object-cover border-4 border-base-300"
           />
@@ -62,7 +69,7 @@ const ProfilePage = () => {
             />
             <Camera className=" text-base-content" />
             </label>
-          <button className="cursor-pointer bg-violet-500 p-2 rounded-full hover:bg-violet-800" onClick={handleClick}><RefreshCcw className={`text-base-content transform transition-transform  ease-in-out ${
+          <button onClick={handleProfilePhotochange} className="cursor-pointer bg-violet-500 p-2 rounded-full hover:bg-violet-800" ><RefreshCcw className={`text-base-content transform transition-transform  ease-in-out ${
           rotating ? 'spin-once':''
         }`} /></button>
           </div>
@@ -116,12 +123,12 @@ const ProfilePage = () => {
          {/* fields end */}
          <div className=" p-10 px-6">
          <div className="font-bold">Account Information</div>
-         <div className="flex justify-between mt-5">
+         <div className="flex justify-between mt-5 gap-3">
          <div className="text-base-content">Member since</div>
          <div className="text-base-content">Random date</div>
          </div>
          <hr className="border-gray-500 my-2"></hr>
-         <div className="flex justify-between">
+         <div className="flex justify-between gap-3">
          <div className="text-base-content lg:text-lg md:text-sm">Account status</div>
          <div className="text-green-500">Active</div>
          </div>

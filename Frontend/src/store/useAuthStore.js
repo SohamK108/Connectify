@@ -63,5 +63,29 @@ export const useAuthStore=create((set,get)=>({
         set({isLoggingin:false});
         }
     },
+    setRandomAvatar:async ()=>{
+        const {authUser,generateRandomString}=get();
+            const randomString = generateRandomString();
+            try{
+               
+            const avatarUrl = ` https://api.dicebear.com/9.x/avataaars/svg?seed=${randomString}`;
+            console.log(avatarUrl);
+            const res=await axiosInstance.put('/auth/updateProfilePhoto', {user:authUser,profilePic: avatarUrl });
+            set({ authUser: res.data });
+            }
+            catch(error)
+            {
+                console.log("Error in setRandomAvatar:",error);
+                toast.error("Failed to set random avatar.");
+            }
+        },
+        generateRandomString:(length = 10)=>{
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return result;
+        },
 
 }));

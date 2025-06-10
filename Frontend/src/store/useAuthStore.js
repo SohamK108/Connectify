@@ -63,15 +63,26 @@ export const useAuthStore=create((set,get)=>({
         set({isLoggingin:false});
         }
     },
+    setAvatar:async (avatarUrl)=>{
+        const {authUser}=get();
+        try{
+            const res=await axiosInstance.put('/auth/updateProfile', {user:authUser,URL: avatarUrl });
+            set({ authUser: res.data });
+            return res;
+        }
+        catch(error)
+        {
+            console.log("Error in setAvatar function in useAuthStore:",error);
+            toast.error("Failed to set avatar.");
+        }
+    }
+    ,
     setRandomAvatar:async ()=>{
-        const {authUser,generateRandomString}=get();
+        const {generateRandomString,setAvatar}=get();
             const randomString = generateRandomString();
             try{
-               
-            const avatarUrl = ` https://api.dicebear.com/9.x/avataaars/svg?seed=${randomString}`;
-            console.log(avatarUrl);
-            const res=await axiosInstance.put('/auth/updateProfilePhoto', {user:authUser,profilePic: avatarUrl });
-            set({ authUser: res.data });
+            const avatarUrl = ` https://api.dicebear.com/9.x/avataaars/png?seed=${randomString}&backgroundType=gradientLinear&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+            const res=await setAvatar(avatarUrl);
             }
             catch(error)
             {

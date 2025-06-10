@@ -1,4 +1,4 @@
-import { User,Mail, AtSign,Camera, RefreshCcw} from "lucide-react";
+import { User,Mail, AtSign,Camera, RefreshCcw, CircleUserRound} from "lucide-react";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import "../index.css"
@@ -32,7 +32,7 @@ const ProfilePage = () => {
 
    const [rotating, setRotating] = useState(false);
 
-  const {authUser,setRandomAvatar}=useAuthStore();
+  const {authUser,setRandomAvatar,setAvatar}=useAuthStore();
   
   const handleProfilePhotochange = () => {
     if (rotating) return; // Prevent multiple clicks while rotating
@@ -41,6 +41,10 @@ const ProfilePage = () => {
         // Stop rotating after 250ms (duration of animation)
     setTimeout(() => setRotating(false), 250);
     // Place your refresh logic here
+  };
+  const handleDefaultAvatarChange=()=>{
+    const res=setAvatar("https://imgs.search.brave.com/olU1frCI_rKOD3-NBWDPcqTpdn8YDMNYb2wVQ2TmqlM/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAzLzQ2LzgzLzk2/LzM2MF9GXzM0Njgz/OTY4M182bkFQemJo/cFNrSXBiOHBtQXd1/ZmtDN2M1ZUQ3d1l3/cy5qcGc");
+    
   };
   return (
     <div className="min-h-screen bg-base-200 flex justify-center items-center">
@@ -53,13 +57,15 @@ const ProfilePage = () => {
         </div>
         <div className="text-center mb-2">Your profile information</div>
         <div className="flex items-center justify-center relative">
-          <div className="flex-col items-center justify-center">
+          <div className="flex-col items-center justify-center min-w-36">
+            <div className="flex justify-center items-center">
           <img
-            src="https://api.dicebear.com/9.x/avataaars/svg?seed=5ZlleHN9gjvhvvj"
+            src={authUser.profilePic}
             alt="Profile"
-            className="w-24 h-24 rounded-full object-cover border-4 border-base-300"
+            className="w-24 h-24 rounded-full object-cover border-4 border-base-300 "
           />
-          <div className="flex justify-between  mt-3  items-center">
+          </div>
+          <div className="flex justify-around  mt-3  items-center ">
             <label name="camera" className="cursor-pointer p-2 rounded-full bg-violet-500 hover:bg-violet-800">
             <input
               type="file"
@@ -69,9 +75,13 @@ const ProfilePage = () => {
             />
             <Camera className=" text-base-content" />
             </label>
+            <button className="cursor-pointer p-2 rounded-full bg-violet-500 hover:bg-violet-800" onClick={handleDefaultAvatarChange}>
+        <CircleUserRound className="text-base-content"/>
+        </button>
           <button onClick={handleProfilePhotochange} className="cursor-pointer bg-violet-500 p-2 rounded-full hover:bg-violet-800" ><RefreshCcw className={`text-base-content transform transition-transform  ease-in-out ${
           rotating ? 'spin-once':''
         }`} /></button>
+        
           </div>
           </div>
         </div>

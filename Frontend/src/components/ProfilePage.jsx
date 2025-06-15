@@ -46,9 +46,9 @@ const ProfilePage = () => {
     
   };
   return (
-    <div className="min-h-screen bg-base-200 flex justify-center items-center ">
+    <div className="h-full  bg-base-200 flex justify-center items-center ">
       {/* profile box starts */}
-      <div className="relative container z-10 rounded-lg shadow-2xl p-8 mx-14 my-8 w-2/3 lg:w-1/3  bg-base-100">
+      <div className="h-1/2 relative container z-10 rounded-lg shadow-2xl p-8 mx-14 my-8 w-2/3 lg:w-1/3  bg-base-100">
         <div
           className={` text-base-content md:text-2xl text-md font-bold mb-3  rounded lg text-center`}
         >

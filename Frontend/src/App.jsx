@@ -34,7 +34,7 @@ useEffect(() => {
     );
   }
   return (
-    <div className='max-h-screen' >
+    <div className='max-h-screen overflow-y:hiddden' >
       <Navbar />
       <Routes>
         <Route path="/" element={authUser?<HomePage />:<Navigate to="/login"/>} />

@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import chats from "./data.js";
 import authRoutes from "./Routes/auth.route.js";
 import messageRoutes from "./Routes/message.route.js";
+import friendRoutes from "./Routes/friend.route.js";
 import {connectDB} from "./Lib/db.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -16,6 +17,7 @@ app.use(express.json());
 
 app.use("/api/auth",authRoutes);
 app.use("/api/message",messageRoutes);
+app.use("/api/friends",friendRoutes);
 
 const PORT=process.env.PORT||5000;
 app.listen(PORT,()=>{

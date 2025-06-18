@@ -11,7 +11,7 @@ const Homepage = () => {
     <div className=' text-base-content flex max-md:justify-center  max-md:h-screen'>
       
       {/* Searchbar and chats */}
-      <div className={`w-full md:w-2/7 h-screen  max-md:flex-col pt-6  md:ml-4 md: ${theme=="light"?"border-r-gray-300":"border-r-gray-500"} md:border-r-1 max-md:mx-6`}>
+      <div className={` w-full md:w-2/7 min-h-screen  max-md:flex-col pt-6  md:ml-4 md: ${theme=="light"?"border-r-gray-300":"border-r-gray-500"} md:border-r-1 max-md:mx-6`}>
       <ChatsSideBar/>
       </div>
 

@@ -3,9 +3,9 @@ import ToggleTheme from './ToggleTheme'
 import { Wifi } from './Wifi'
 import { Link } from "react-router-dom";
 import { useAuthStore } from '../store/useAuthStore';
-import { LogOut,Settings,User} from 'lucide-react';
+import { LogOut,Settings,User, UserPlus} from 'lucide-react';
 const Navbar = () => {
-  const {authUser,logout}=useAuthStore();
+  const {authUser,logout,addFriend}=useAuthStore();
   return (
     <>
     <div className='w-full relative flex items-center h-20 shadow-lg pl-4'>
@@ -36,6 +36,9 @@ const Navbar = () => {
           <div className='flex gap-2 items-center  rounded-xl p-3 cursor-pointer'>
         <LogOut className='size-8 cursor-pointer' onClick={logout} />
         {/* <span className='text-md lg:text-xl'>Logout</span> */}
+        </div>
+        <div className='flex gap-2 items-center  rounded-xl p-3 cursor-pointer'>
+        <UserPlus className='size-8 cursor-pointer' onClick={()=>{addFriend("68530010f1559f01dc63eed2")}} />
         </div>
         </div>
     }

@@ -7,6 +7,7 @@ export const useAuthStore=create((set,get)=>({
     isSigningUp:false,
     isLoggingin:false,
     isUpdatingProfile:false,
+    isFetchingFriends:false,
     theme:'light',
 
     checkAuth :async()=>{
@@ -98,5 +99,29 @@ export const useAuthStore=create((set,get)=>({
         }
         return result;
         },
-
+        getFriendsInformation:async()=>{
+            const {authUser}=get();
+            set({isFetchingFriends:true});
+            try{
+            const res=await axiosInstance.get("/friends/getFriendsInformation");
+            set({isFetchingFriends:false});
+            return res.data;
+            }
+            catch(error)
+            {
+                set({isFetchingFriends:false});
+                console.log("Error in getFriendsInformation:",error);
+                toast.error("Failed to fetch friends");
+            }
+        },
+        addFriend:async(friend_id)=>{
+            try{
+                await axiosInstance.post("/friends/addFriend",{friendId:friend_id});
+            }
+            catch(error)
+            {
+                console.log("Error in addFriend :",error);
+                toast.error("Error in adding friend");
+            }
+        },
 }));

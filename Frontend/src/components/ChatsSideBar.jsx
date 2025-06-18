@@ -1,9 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Search } from "lucide-react";
+import { axiosInstance } from "../lib/axios";
+import { useState } from "react";
 
 const ChatsSideBar = () => {
-  const { theme } = useAuthStore();
+  const { theme,authUser,getFriendsInformation,isFetchingFriends } = useAuthStore();
+  const [friendsInformation, setfriendsInformation] = useState([]);
+  useEffect(() => {
+    const fetchdata=async()=>{
+   const data=await getFriendsInformation();
+    console.log(data);
+    setfriendsInformation(data);}
+    fetchdata();
+  }, [])
+    if(isFetchingFriends)
+    {
+      return <>
+      <div className={`h-full`}>
+        <div className="flex items-center justify-center h-screen">
+          <span className="loading loading-ring text-white w-24 h-24 "></span>
+        </div>
+      </div>
+      </>
+    }
+
   return (
     <div>
       {/* Centered fixed-width wrapper on small screens */}
@@ -25,14 +46,16 @@ const ChatsSideBar = () => {
             theme == "light" ? "border-gray-300" : "border-gray-500"
           }`}
         ></hr>
+        {friendsInformation?.map((friend)=>(
+          <>
         <div className="overflow-y-auto max-h-[70vh] py-2 hover:bg-base-300 ">
           <div className="h-14  flex items-center  gap-2">
-            <div className="w-14 h-full flex items-center justify-center pl-2">
-              <div className="rounded-full w-12 h-12 bg-gray-400 "></div>
+            <div className="w-16 h-full flex items-center justify-center pl-2">
+              <img src={friend.profilePic} alt="img" className="rounded-full w-12 h-12 bg-cover "></img>
             </div>
             <div className="flex-col w-full items-center justify-center px-4">
               <div className="font-semibold text-xl w-full flex justify-between items-center">
-                <span>Jane Doe</span>
+                <span>{friend.fullName}</span>
                 <span className="text-sm font-light">9:35</span>
               </div>
               <div className="text-sm">Message goes here...</div>
@@ -43,18 +66,28 @@ const ChatsSideBar = () => {
           className={` bg-gray-500 ${
             theme == "light" ? "border-gray-300" : "border-gray-500"
           }`}
-        ></hr>
-        {/* <hr className={`my-2 bg-gray-500 ${theme=="light"?"border-gray-300":"border-gray-500"}`}></hr> */}
-        <div className="overflow-y-auto max-h-[70vh]">
-          <div className="h-14 rounded-xl flex items-center pl-2">
-            <div className="rounded-full bg-gray-400 w-12 h-12"></div>
+        ></hr></>))}
+       
+         <>
+        <div className="overflow-y-auto max-h-[70vh] py-2 hover:bg-base-300 ">
+          <div className="h-14  flex items-center  gap-2">
+            <div className="w-14 h-full flex items-center justify-center pl-2">
+              <div className="rounded-full w-12 h-12 bg-gray-400 "></div>
+            </div>
+            <div className="flex-col w-full items-center justify-center px-4">
+              <div className="font-semibold text-xl w-full flex justify-between items-center">
+                <span>hello</span>
+                <span className="text-sm font-light">9:35</span>
+              </div>
+              <div className="text-sm">Message goes here...</div>
+            </div>
           </div>
         </div>
         <hr
-          className={`my-2 bg-gray-500 ${
+          className={` bg-gray-500 ${
             theme == "light" ? "border-gray-300" : "border-gray-500"
           }`}
-        ></hr>
+        ></hr></>
       </div>
     </div>
   );

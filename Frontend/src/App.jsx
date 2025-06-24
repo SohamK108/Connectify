@@ -26,15 +26,15 @@ useEffect(() => {
   if(isCheckingAuth )
   {
     return (
-      <div className={`max-h-screen bg-base-200`}>
-        <div className="flex items-center justify-center h-screen">
+      <div className={`h-screen bg-base-200`}>
+        <div className="flex items-center justify-center h-full">
           <span className="loading loading-ring text-white w-24 h-24 "></span>
         </div>
       </div>
     );
   }
   return (
-    <div className='max-h-screen overflow-y:hiddden' >
+    <div className='h-full overflow-y:hiddden' >
       <Navbar />
       <Routes>
         <Route path="/" element={authUser?<HomePage />:<Navigate to="/login"/>} />

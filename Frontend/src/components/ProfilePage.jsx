@@ -6,34 +6,31 @@ import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "../store/useAuthStore";
 
 
-const handleImageChange = async (e) => {
-    // const file = e.target.files[0];
-    // if (!file) return;
 
-    // const formData = new FormData();
-    // formData.append("file", file);
-    // formData.append("upload_preset", "your_upload_preset"); // Replace with your Cloudinary upload preset
-    // formData.append("cloud_name", "your_cloud_name"); // Replace with your Cloudinary cloud name
-
-    // try {
-    //   const res = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
-    //     method: "POST",
-    //     body: formData,
-    //   });
-
-    //   const data = await res.json();
-    //   setImagePreview(data.secure_url);
-    // } catch (error) {
-    //   console.error("Upload failed:", error);
-    // }
-  };
  
 const ProfilePage = () => {
 
    const [rotating, setRotating] = useState(false);
 
-  const {authUser,setRandomAvatar,setAvatar}=useAuthStore();
+  const {authUser,setRandomAvatar,setAvatar,handleProfileUpload,isUpdatingProfile}=useAuthStore();
+  useEffect(() => {
+    console.log(authUser);
+  }, [])
   
+  const handleImageChange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onloadend = async () => {
+      const base64Image = reader.result;
+
+
+      await handleProfileUpload({profilePic:base64Image});
+
+  };
+}
   const handleProfilePhotochange = () => {
     if (rotating) return; // Prevent multiple clicks while rotating
     setRotating(true);
@@ -45,6 +42,16 @@ const ProfilePage = () => {
     const res=setAvatar("https://imgs.search.brave.com/olU1frCI_rKOD3-NBWDPcqTpdn8YDMNYb2wVQ2TmqlM/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAzLzQ2LzgzLzk2/LzM2MF9GXzM0Njgz/OTY4M182bkFQemJo/cFNrSXBiOHBtQXd1/ZmtDN2M1ZUQ3d1l3/cy5qcGc");
     
   };
+  if(isUpdatingProfile)
+  {
+    return <>
+      <div className={`h-full`}>
+        <div className="flex items-center justify-center h-screen">
+          <span className="loading loading-ring text-white w-24 h-24 "></span>
+        </div>
+      </div>
+      </>
+  }
   return (
     <div className="h-full  bg-base-200 flex justify-center items-center ">
       {/* profile box starts */}
@@ -61,7 +68,7 @@ const ProfilePage = () => {
           <img
             src={authUser.profilePic}
             alt="Profile"
-            className="w-24 h-24 rounded-full object-cover border-4 border-base-300 "
+            className="w-24 h-24 rounded-full object-cover object-top border-4 border-base-300 "
           />
           </div>
           <div className="flex justify-around  mt-3  items-center ">

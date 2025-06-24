@@ -76,8 +76,22 @@ export const useAuthStore=create((set,get)=>({
             console.log("Error in setAvatar function in useAuthStore:",error);
             toast.error("Failed to set avatar.");
         }
-    }
-    ,
+    },
+    handleProfileUpload:async(data)=>{
+        set({isUpdatingProfile:true});
+        try{
+            const res=await axiosInstance.put("/auth/updateProfileByUpload",data);
+            set({authUser:res.data});
+            set({isUpdatingProfile:false});
+            toast.success("Profile photo updated successfully!");
+        }
+        catch(error)
+        {
+            console.log("Error in handleProfileUpload:",error);
+            toast.error("Failure in updating profile photo");
+            set({isUpdatingProfile:true});
+        }
+    },
     setRandomAvatar:async ()=>{
         const {generateRandomString,setAvatar}=get();
             const randomString = generateRandomString();
@@ -100,11 +114,10 @@ export const useAuthStore=create((set,get)=>({
         return result;
         },
         getFriendsInformation:async()=>{
-            const {authUser}=get();
             set({isFetchingFriends:true});
             try{
             const res=await axiosInstance.get("/friends/getFriendsInformation");
-            set({isFetchingFriends:false});
+            if(res) set({isFetchingFriends:false});
             return res.data;
             }
             catch(error)

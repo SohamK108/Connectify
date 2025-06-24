@@ -60,6 +60,7 @@ mustInclude += '._';
       userName:newUser.userName,
     email:newUser.email,
     profilePic:newUser.profilePic,
+    friends:newUser.friends
     });
    }
    else
@@ -88,7 +89,6 @@ export const login =async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
      generateToken(user._id,res);
-     console.log(req.cookies.jwt);
     return res.status(200).json({
         id: user._id,
         userName:user.userName,
@@ -96,6 +96,7 @@ export const login =async (req, res) => {
         email: user.email,
         profilePic: user.profilePic,
         createdAt:user.createdAt,
+        friends:user.friends
       });
   }catch(error)
   {

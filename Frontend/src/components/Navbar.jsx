@@ -1,11 +1,16 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ToggleTheme from './ToggleTheme'
 import { Wifi } from './Wifi'
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from '../store/useAuthStore';
 import { LogOut,Settings,User, UserPlus} from 'lucide-react';
+import SearchUsers from './searchUsers';
+import { useMessageStore } from '../store/useMessageStore';
+
 const Navbar = () => {
-  const {authUser,logout,addFriend}=useAuthStore();
+  const {authUser,logout}=useAuthStore();
+  const {isSearchOpen,setSearchOpen}=useMessageStore();
+  const location=useLocation();
   return (
     <>
     <div className='w-full relative flex items-center h-20 shadow-lg pl-4'>
@@ -22,7 +27,7 @@ const Navbar = () => {
   }
       {/* for >=lg */}
     {
-      authUser &&<div className="absolute right-16 flex justify-around   max-sm:hidden">
+      authUser &&<div className="absolute right-16 flex justify-around   max-lg:hidden">
         <div className='flex gap-2 items-center  rounded-xl p-3 cursor-pointer'>
         <Settings className='size-8'  />
         {/* <span className='text-md lg:text-xl'>Settings</span> */}
@@ -33,13 +38,15 @@ const Navbar = () => {
         {/* <span className='text-md lg:text-xl'>Profile</span> */}
         </div>
         </Link>
+        {(location.pathname=="/")&&(<div className='flex gap-2 items-center  rounded-xl p-3 cursor-pointer'>
+        <UserPlus className='size-8 cursor-pointer' onClick={() => setSearchOpen(true)} />
+        </div>)
+        }
           <div className='flex gap-2 items-center  rounded-xl p-3 cursor-pointer'>
         <LogOut className='size-8 cursor-pointer' onClick={logout} />
         {/* <span className='text-md lg:text-xl'>Logout</span> */}
         </div>
-        <div className='flex gap-2 items-center  rounded-xl p-3 cursor-pointer'>
-        <UserPlus className='size-8 cursor-pointer' onClick={()=>{addFriend("68530010f1559f01dc63eed2")}} />
-        </div>
+        {isSearchOpen && <SearchUsers/>}
         </div>
     }
     {/* for <lg */}

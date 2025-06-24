@@ -4,9 +4,9 @@ export const getFriendsInformation=async(req,res)=>{
   {
     const userId=req.user._id;
     const fetchedFriendIds=await User.findById(userId).populate("friends","fullName profilePic");
-    console.log(fetchedFriendIds.friends);
     const fetchedFriendsdata=fetchedFriendIds.friends;
-    return res.status(200).json([fetchedFriendsdata]);
+    console.log(fetchedFriendIds);
+    return res.status(200).json(fetchedFriendsdata);
   }
   catch(error)
   {
@@ -31,4 +31,27 @@ export const addFriend = async (req, res) => {
     console.error("Error in addingFriend controller:", err);
     res.status(500).json({ message: "Internal server error" });
   }
+}
+export const getUsersForFriendRequest=async(req,res)=>{
+    try {
+    const { value } = req.query;
+    const currentUserId = req.user._id;
+    if (!value || value.trim() === "") {
+      return res.status(400).json({ message: "Query string is required" });
+    }
+    const currentUser = await User.findById(currentUserId).select("friends");
+    const searchRegex = new RegExp(value, "i");
+    const users = await User.find({
+      _id: { $nin: [...currentUser.friends, currentUserId] },
+      $or: [
+        { userName: { $regex: searchRegex } },
+        { fullName: { $regex: searchRegex } },
+      ],
+    }).select("_id userName fullName profilePic");
+    return res.status(200).json(users);
+  } catch (error) {
+    console.error("Error in getUsersForFriendRequest controller:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+
 };

@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import User from "../Models/user.model.js";
 import { generateToken } from "../Lib/utils.js";
 import cloudinary from "../Lib/cloudinary.js";
+
 export const signup =async (req, res) => {
  try
  {
@@ -50,18 +51,13 @@ mustInclude += '._';
    const salt = await bcrypt.genSalt(10);
    const hashedPassword = await bcrypt.hash(password, salt);
    const newUser=new User({email,fullName,password:hashedPassword,userName});
-   console.log(newUser);
+    
    if(newUser)
    {
     generateToken(newUser._id,res);
     await newUser.save();
-    res.status(201).json({_id:newUser._id,
-      fullName:newUser.fullName,
-      userName:newUser.userName,
-    email:newUser.email,
-    profilePic:newUser.profilePic,
-    friends:newUser.friends
-    });
+    const { password, ...safeUser } = user;
+    res.status(201).json({user:safeUser});
    }
    else
    {
@@ -75,6 +71,7 @@ mustInclude += '._';
  }
   
 };
+
 export const login =async (req, res) => {
   const {email,password}=req.body;
   try{
@@ -89,15 +86,12 @@ export const login =async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
      generateToken(user._id,res);
-    return res.status(200).json({
-        id: user._id,
-        userName:user.userName,
-        fullName: user.fullName,
-        email: user.email,
-        profilePic: user.profilePic,
-        createdAt:user.createdAt,
-        friends:user.friends
-      });
+     if(user)
+     {
+    const { password, ...safeUser } = user.toObject();
+    console.log(safeUser)
+      return res.status(200).json({user:safeUser});
+     }
   }catch(error)
   {
     console.log("Error in Login controller!",error.message);

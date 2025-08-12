@@ -9,9 +9,17 @@ import SettingsPage from './components/SettingsPage';
 import ProfilePage from './components/ProfilePage';
 import { useAuthStore } from './store/useAuthStore';
 import { Toaster } from 'react-hot-toast';
+import { useLocation } from "react-router-dom";
+import OtherUserProfilePage from './components/OtherUserProfilePage';
+
 
 function App() {
   const {theme,authUser,checkAuth,isCheckingAuth}=useAuthStore();
+
+  const location = useLocation();
+
+  const isHome = location.pathname === "/";
+
  useEffect(() => {
   checkAuth(); 
 }, [checkAuth]);
@@ -34,16 +42,19 @@ useEffect(() => {
     );
   }
   return (
-    <div className='h-full overflow-y:hiddden' >
+    <div className='h-screen'>
       <Navbar />
+    <div className={`h-[calc(100vh-theme(spacing.20))] ${isHome?'overflow-hidden':'overflow-y-auto'}`} >
       <Routes>
         <Route path="/" element={authUser?<HomePage />:<Navigate to="/login"/>} />
         <Route path="/login" element={authUser?<Navigate to="/"/>:<LoginPage />} />
         <Route path="/signup" element={authUser?<Navigate to="/"/>:<SignUpPage />} />
         <Route path="/settings" element={authUser?<SettingsPage />:<Navigate to="/"/>} />
         <Route path="/profile" element={authUser?<ProfilePage />:<Navigate to="/"/>} />
+        <Route path="/profile/:userName" element={authUser?<OtherUserProfilePage />:<Navigate to="/"/>} />
       </Routes>
       <Toaster/>
+    </div>
     </div>
   );
 }

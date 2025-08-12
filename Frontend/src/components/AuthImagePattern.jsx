@@ -10,7 +10,7 @@ const AuthImagePattern = ({title,subtitle}) => {
     }
     
   return (
-    <div className={`min-h-full   flex-col  items-center`}>
+    <div className={`flex flex-col items-center justify-center h-full w-full`}>
     <div className="  lg:flex items-center justify-center ">
       <div className="max-w-md text-center">
         <div className="grid grid-cols-3 gap-3 mb-5 justify-center" >

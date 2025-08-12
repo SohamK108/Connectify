@@ -3,8 +3,9 @@ import AuthImagePattern from './AuthImagePattern.jsx'
 
 const NoChatPage = () => {
   return (
-    <div className='overflow-auto max-h-full max-w-full flex items-center justify-center '>
-          <AuthImagePattern/>
+    <div className='flex items-center justify-center h-full w-full '>
+          <AuthImagePattern 
+      subtitle="Start chatting! Connect with your friends, share memories and stay in touch with your loved ones!"/>
     </div>
   )
 }

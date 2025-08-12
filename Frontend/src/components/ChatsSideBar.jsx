@@ -30,7 +30,7 @@ const ChatsSideBar = () => {
   return (
     <div>
       {/* Centered fixed-width wrapper on small screens */}
-      <div className={`w-full h-screen scrollbar-thin scrollbar-thumb-base-300 `} >
+      <div className={`w-full h-screen`} >
         <div className=" mb-6 text-2xl ml-4 font-bold">Chats</div>
         <div className="flex items-center mb-4 relative w-full md:pr-5">
           <input

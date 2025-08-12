@@ -4,7 +4,7 @@ import { Wifi } from './Wifi'
 import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from '../store/useAuthStore';
 import { LogOut,Settings,User, UserPlus} from 'lucide-react';
-import SearchUsers from './searchUsers';
+import SearchUsers from './SearchUsers';
 import { useMessageStore } from '../store/useMessageStore';
 
 const Navbar = () => {

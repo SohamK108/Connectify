@@ -45,7 +45,7 @@ const ProfilePage = () => {
   if(isUpdatingProfile)
   {
     return <>
-      <div className={`h-full`}>
+      <div className={`h-screen`}>
         <div className="flex items-center justify-center h-screen">
           <span className="loading loading-ring text-white w-24 h-24 "></span>
         </div>
@@ -53,9 +53,9 @@ const ProfilePage = () => {
       </>
   }
   return (
-    <div className="h-full  bg-base-200 flex justify-center items-center ">
+    <div className="min-h-screen bg-base-200 flex justify-center items-center ">
       {/* profile box starts */}
-      <div className="h-1/2 relative container z-10 rounded-lg shadow-2xl p-8 mx-14 my-8 w-2/3 lg:w-1/3  bg-base-100">
+      <div className="h-1/2 relative z-10 rounded-lg shadow-2xl p-8 mx-14 my-2 w-2/3 lg:w-1/3  bg-base-100">
         <div
           className={` text-base-content md:text-2xl text-md font-bold mb-3  rounded lg text-center`}
         >
@@ -79,12 +79,12 @@ const ProfilePage = () => {
               className="hidden"
               onChange={handleImageChange}
             />
-            <Camera className=" text-base-content" />
+            <Camera className=" text-white" />
             </label>
             <button className="cursor-pointer p-2 rounded-full bg-violet-500 hover:bg-violet-800" onClick={handleDefaultAvatarChange}>
-        <CircleUserRound className="text-base-content"/>
+        <CircleUserRound className="text-white"/>
         </button>
-          <button onClick={handleProfilePhotochange} className="cursor-pointer bg-violet-500 p-2 rounded-full hover:bg-violet-800" ><RefreshCcw className={`text-base-content transform transition-transform  ease-in-out ${
+          <button onClick={handleProfilePhotochange} className="cursor-pointer bg-violet-500 p-2 rounded-full hover:bg-violet-800" ><RefreshCcw className={`text-white transform transition-transform  ease-in-out ${
           rotating ? 'spin-once':''
         }`} /></button>
         

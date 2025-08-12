@@ -32,6 +32,19 @@ export const addFriend = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 }
+export  const getUserInformationByUserName=async(req,res)=>{
+    try
+    {
+      const {userName}=req.params;
+      const requiredUser=await User.findOne({userName}).select("-password -friends -usersWhoHaveRequested -userFriendRequests");
+      return res.status(200).json(requiredUser);
+    }
+    catch(error)
+    {
+      console.log("Error in getUserInformationByUserName API controller:",error);
+      return res.status(500).json({message:"Internal server error"});
+    }
+}
 export const getUsersForFriendRequest=async(req,res)=>{
     try {
     const { value } = req.query;

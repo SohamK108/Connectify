@@ -56,7 +56,7 @@ mustInclude += '._';
    {
     generateToken(newUser._id,res);
     await newUser.save();
-    const { password, ...safeUser } = user;
+    const { password, ...safeUser } = user.toObject();
     res.status(201).json({user:safeUser});
    }
    else
@@ -89,7 +89,6 @@ export const login =async (req, res) => {
      if(user)
      {
     const { password, ...safeUser } = user.toObject();
-    console.log(safeUser)
       return res.status(200).json({user:safeUser});
      }
   }catch(error)

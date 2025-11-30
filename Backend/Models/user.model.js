@@ -1,5 +1,27 @@
 import mongoose from "mongoose";
 
+const notificationSchema=new mongoose.Schema(
+    {
+        type:{
+        type:String,
+        required:true,
+        enum:['FRIEND_REQUEST','SYSTEM','FRIEND_ACCEPTED'],
+        },
+        from:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"User",
+        },
+        message:{
+          type:String,
+          required:true,
+        },
+        createdAt:{
+          type:Date,
+          default:Date.now,
+        },
+    }
+);
+
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -51,6 +73,14 @@ const userSchema = new mongoose.Schema(
         }
       ],
       default:[]
+    },
+    seenNotifications:{
+    type:[notificationSchema],
+    default:[],
+    },
+    unseenNotifications:{
+    type:[notificationSchema],
+    default:[],
     },
   },
   {

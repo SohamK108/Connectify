@@ -3,7 +3,7 @@ import ToggleTheme from './ToggleTheme'
 import { Wifi } from './Wifi'
 import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from '../store/useAuthStore';
-import { LogOut,Settings,User, UserPlus} from 'lucide-react';
+import { Bell, LogOut,Settings,User, UserPlus} from 'lucide-react';
 import SearchUsers from './SearchUsers';
 import { useMessageStore } from '../store/useMessageStore';
 
@@ -32,6 +32,12 @@ const Navbar = () => {
         <Settings className='size-8'  />
         {/* <span className='text-md lg:text-xl'>Settings</span> */}
         </div>
+        <Link to="/notifications">
+        <div className='flex gap-2 items-center  rounded-xl p-3 cursor-pointer'>
+        <Bell className='size-8 cursor-pointer'/>
+        {/* <span className='text-md lg:text-xl'>Profile</span> */}
+        </div>
+        </Link>
         <Link to="/profile">
         <div className='flex gap-2 items-center  rounded-xl p-3 cursor-pointer'>
         <User className='size-8 cursor-pointer'/>

@@ -4,8 +4,8 @@ import AuthImagePattern from './AuthImagePattern.jsx'
 const NoChatPage = () => {
   return (
     <div className='flex items-center justify-center h-full w-full '>
-          <AuthImagePattern 
-      subtitle="Start chatting! Connect with your friends, share memories and stay in touch with your loved ones!"/>
+          <AuthImagePattern title="Welcome to Connectify!"
+      subtitle="Select a conversation from chat sidebar to start chatting."/>
     </div>
   )
 }

@@ -1,6 +1,10 @@
 import {create} from 'zustand';
 import { axiosInstance } from '../lib/axios';
 import toast from 'react-hot-toast';
+import { disconnect } from 'mongoose';
+import { io } from 'socket.io-client';
+
+
 export const useAuthStore=create((set,get)=>({
     authUser:null,
     isCheckingAuth:true,
@@ -9,11 +13,17 @@ export const useAuthStore=create((set,get)=>({
     isUpdatingProfile:false,
     isFetchingFriends:false,
     theme:'light',
+    socket:null,
+    BACKEND_URL:'http://localhost:5000',
+    onlineUsers:[],
+    seenNotifications:[],
+    unseenNotifications:[],
 
     checkAuth :async()=>{
         try {
             const res=await axiosInstance.get('/auth/checkAuth');
             set({authUser:res.data});
+            get().connectSocket();
         } catch (error) {
             console.log("Error in frontend checkAuth:",error);
             set({authUser:null});
@@ -29,6 +39,7 @@ export const useAuthStore=create((set,get)=>({
         const res=await axiosInstance.post("/auth/signup",data);  
         set({authUser:res.data}); 
         toast.success("Account created successfully!");
+        get().connectSocket();
         } catch (error) {
             console.log("Error in frontend signUp:",error)
             toast.error(error.response.data.message);
@@ -44,6 +55,7 @@ export const useAuthStore=create((set,get)=>({
             await axiosInstance.post("/auth/logout");
             set({authUser:null});
             toast.success("Logged out successfully!");
+            get().disconnectSocket();
         } catch (error) {
             toast.error(error.data.response.message);
         }
@@ -54,6 +66,7 @@ export const useAuthStore=create((set,get)=>({
             const res=await axiosInstance.post("/auth/login",data);
             set({authUser:res.data.user});
             toast.success("Sign in successful!");
+            get.connectSocket();
         }
         catch(error)
         {
@@ -127,14 +140,66 @@ export const useAuthStore=create((set,get)=>({
                 toast.error("Failed to fetch friends");
             }
         },
-        addFriend:async(friend_id)=>{
+        setAuthUser:(updatedAuthUser)=>{
+            set({authUser:updatedAuthUser});
+        },
+        connectSocket:()=>{
+            const authUser=get().authUser;
+            if(!authUser || get().socket?.connected) return;
+            const socket=io(get().BACKEND_URL,{
+                auth:{
+                    userId:authUser._id
+                },
+            });
+            socket.connect();
+            set({socket:socket});
+            socket.on("getOnlineUsers",(userIds)=>{
+                set({onlineUsers:userIds});
+            });
+        },
+        disconnectSocket:()=>{
+            if(get().socket?.connected) {
+                get().socket.disconnect();
+                set({socket:null});
+            }
+        },
+        subscribeToNotifications:()=>{
+            const socket=get().socket;
+            const {authUser}=get();
+            if(!socket) return;
+            socket.on("newNotification",(notification)=>{
+                console.log("Received notification via socket:", notification);
+                const {unseenNotifications}=get();
+                set({
+                    unseenNotifications:[notification,...unseenNotifications].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                });
+                if (authUser) {
+                set({
+
+                authUser: {
+                    ...authUser,
+                    unseenNotifications: [notification, ...authUser.unseenNotifications].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                }
+                });
+            }
+            });
+        },
+        unsubscribeFromNotifications:()=>{
+            const socket=get().socket;
+            if(!socket) return;
+            socket.off("newNotification");
+        },
+        fetchNotifications:async()=>{
+            const {authUser}=get();
+            if(!authUser) return;
             try{
-                await axiosInstance.post("/friends/addFriend",{friendId:friend_id});
-            }
-            catch(error)
+                set({
+                    unseenNotifications:authUser.unseenNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+                    seenNotifications:authUser.seenNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                });
+            } catch(error)
             {
-                console.log("Error in addFriend :",error);
-                toast.error("Error in adding friend");
-            }
+                console.log("Error in fetchNotifications function:",error);
+            }       
         },
 }));

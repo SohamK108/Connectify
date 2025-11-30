@@ -11,10 +11,11 @@ import { useAuthStore } from './store/useAuthStore';
 import { Toaster } from 'react-hot-toast';
 import { useLocation } from "react-router-dom";
 import OtherUserProfilePage from './components/OtherUserProfilePage';
+import NotificationBar from './components/NotificationBar';
 
 
 function App() {
-  const {theme,authUser,checkAuth,isCheckingAuth}=useAuthStore();
+  const {theme,authUser,checkAuth,isCheckingAuth,onlineUsers}=useAuthStore();
 
   const location = useLocation();
 
@@ -23,6 +24,9 @@ function App() {
  useEffect(() => {
   checkAuth(); 
 }, [checkAuth]);
+// useEffect(() => {
+//   console.log(authUser)
+// }, [authUser])
 
 useEffect(() => { 
   if (theme === 'dark') {
@@ -42,7 +46,7 @@ useEffect(() => {
     );
   }
   return (
-    <div className='h-screen'>
+    <div className='h-screen w-screen'>
       <Navbar />
     <div className={`h-[calc(100vh-theme(spacing.20))] ${isHome?'overflow-hidden':'overflow-y-auto'}`} >
       <Routes>
@@ -51,6 +55,7 @@ useEffect(() => {
         <Route path="/signup" element={authUser?<Navigate to="/"/>:<SignUpPage />} />
         <Route path="/settings" element={authUser?<SettingsPage />:<Navigate to="/"/>} />
         <Route path="/profile" element={authUser?<ProfilePage />:<Navigate to="/"/>} />
+        <Route path="/notifications" element={authUser?<NotificationBar/>:<Navigate to="/"/>}/>
         <Route path="/profile/:userName" element={authUser?<OtherUserProfilePage />:<Navigate to="/"/>} />
       </Routes>
       <Toaster/>

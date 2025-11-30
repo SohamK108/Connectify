@@ -4,9 +4,8 @@ import { Search } from "lucide-react";
 import { axiosInstance } from "../lib/axios";
 import { useState } from "react";
 import { useMessageStore } from "../store/useMessageStore";
-
 const ChatsSideBar = () => {
-  const { theme,authUser,getFriendsInformation,isFetchingFriends } = useAuthStore();
+  const { theme,authUser,getFriendsInformation,isFetchingFriends,onlineUsers } = useAuthStore();
   const {selectChat,chatSelected}=useMessageStore();
   const [friendsInformation, setfriendsInformation] = useState([]);
   useEffect(() => {
@@ -50,12 +49,18 @@ const ChatsSideBar = () => {
           }`}
         ></hr>
         {friendsInformation?.map((friend)=>(
-          <>
+          <div key={friend?._id}>
         <div key={friend?._id} className={`overflow-y-auto max-h-[70vh]  py-2 hover:bg-base-300 cursor-pointer ${friend?._id==chatSelected?"bg-base-300":""}`} onClick={()=>{selectChat(friend?._id)}}>
           <div className="h-14 max-lg:h-16  flex items-center  gap-2">
-            <div className="w-16 h-full flex items-center justify-center pl-2">
-              <img src={friend?.profilePic} alt={friend?.userName||"img"} className="rounded-full w-12 h-12 object-cover object-top "></img>
-            </div>
+            <div className="relative w-12 h-12">
+        <img
+          src={friend?.profilePic}
+          alt={friend?.userName || "img"}
+          className="rounded-full w-12 h-12 object-cover object-top"/>
+        {onlineUsers.includes(friend?._id) && (
+          <span className="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 border-1 border-white rounded-full"></span>
+        )}
+      </div>
             <div className="flex-col w-full items-center justify-center px-4">
               <div className="font-semibold w-full text-sm sm:text-lg flex gap-2 justify-between items-center">
                 <span >{friend?.fullName}</span>
@@ -69,7 +74,7 @@ const ChatsSideBar = () => {
           className={` bg-gray-500 ${
             theme == "light" ? "border-gray-300" : "border-gray-500"
           }`}
-        ></hr></>))}
+        ></hr></div>))}
       </div>
     </div>
   );

@@ -5,24 +5,69 @@ import "../index.css"
 import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "../store/useAuthStore";
 import { useParams } from "react-router-dom";
-import { useMessageStore} from "../store/useMessageStore"
+import { useMessageStore} from "../store/useMessageStore";
 
 
  
 const OtherUserProfilePage = () => {
     const {userName}=useParams();
+    const {authUser,setAuthUser,checkAuth}=useAuthStore();
     const [fetchedUser,setFetchedUser]=useState({});
-    const {getUserInformationByUserName,isLoadingUserProfile}=useMessageStore();
-    
+    const {getUserInformationByUserName,isLoadingUserProfile,acceptRequest,sendFriendRequest,isRequesting,isAcceptingRequest}=useMessageStore();
+    const [friendStatus,setFriendStatus]=useState(-1);
     useEffect(()=>{
     const fetchUser = async () => {
     const reqUser = await getUserInformationByUserName(userName);
-    setFetchedUser(reqUser);
-  };
-  fetchUser();
+    setFetchedUser(reqUser);};
+    fetchUser();
     },[userName,getUserInformationByUserName]);
 
-    if(isLoadingUserProfile)
+    useEffect(() => {
+     checkAuth();
+    }, [])
+    
+
+      useEffect(()=>{
+    if(fetchedUser)
+    {
+      if(authUser.userFriendRequests.includes(fetchedUser._id))
+      {
+        setFriendStatus(0);
+      }
+      else if(authUser.usersWhoHaveRequested.includes(fetchedUser._id))
+      {
+        setFriendStatus(1);
+      }
+      else if(authUser.friends.includes(fetchedUser._id))
+      {
+        setFriendStatus(2);
+      }
+      else
+      {
+        setFriendStatus(3);
+      }
+    }
+  },[fetchedUser,authUser]);
+
+  const handleStatusClick=async ()=>{
+    if(friendStatus==0)
+    {
+      //Rollback the request-Remove authUser._id from fetchedUser's usersWhoHaveRequested array.Also remove the notification sent to fetchedUser
+    }
+    else if(friendStatus==1)
+    {
+      //Add the fetchedUser._id to friends array of authUser.Add the authUser._id to friends array of fetchedUser.Remove fetchedUser._id from usersWhoHaveRequested array of authUser.Remove authUser._id from userFriendRequests.
+      await acceptRequest(fetchedUser._id);
+      
+    }
+    else if(friendStatus==3)
+    {
+      //Add the fetchedUser._id to userFriendRequests array of authUser and add the authUser._id to fetcheduser's usersWhoHaveRequested.Also send notification to fetchedUser about acceptance/rejection.
+      await sendFriendRequest(fetchedUser._id);
+ 
+    }
+  }
+    if(isLoadingUserProfile||isRequesting||isAcceptingRequest)
     {
       return (
       <div className={`h-screen bg-base-200`}>
@@ -31,7 +76,6 @@ const OtherUserProfilePage = () => {
         </div>
       </div>
     );
-
     }
 
   return (
@@ -100,9 +144,11 @@ const OtherUserProfilePage = () => {
         </div>
         </div> */}
          {/* third field ends */}
-         <div className="flex justify-center items-center my-6">
-            <button className="bg-blue-600 p-2 rounded-2xl px-4 cursor-pointer">Follow</button>
-          </div>
+         {friendStatus!=2 && <div className="flex justify-center items-center my-6 ">
+           {friendStatus==1 && <button onClick={handleStatusClick} className="bg-green-600 text-white p-2 rounded-2xl px-4 cursor-pointer">Accept</button>}
+            {friendStatus==0 && <button onClick={handleStatusClick} className="bg-gray-500 p-2 text-white rounded-2xl px-4 cursor-pointer">Requested</button>}
+             { friendStatus==3 && <button onClick={handleStatusClick} className="bg-blue-600 p-2 text-white rounded-2xl px-4 cursor-pointer">Request</button>}
+          </div>}
          </div>
          {/* fields end */}
          <div className=" mt-8 px-2">

@@ -9,9 +9,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger-output.json' assert { type: 'json' };
-
-
-const app = express();
+import {app,server} from "./Lib/socket.js";
+import mongoose from "mongoose";
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json()); // Required to parse JSON request body
 app.use(express.urlencoded({ extended: true })); // Optional: for handling form-urlencoded data
@@ -29,7 +28,7 @@ app.use("/api/auth", authRoutes);
   #swagger.auto = true 
   #swagger.tags = ['Message']
 */
-app.use("/api/message", messageRoutes);
+app.use("/api/messages", messageRoutes);
 
 /* 
   #swagger.auto = true 
@@ -39,7 +38,7 @@ app.use("/api/friends", friendRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 const PORT=process.env.PORT||5000;
-app.listen(PORT,()=>{
+server.listen(PORT,()=>{
     console.log(`Backend server started successfully on port ${PORT}!`);
     connectDB();
 });

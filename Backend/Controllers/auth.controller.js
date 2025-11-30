@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import User from "../Models/user.model.js";
 import { generateToken } from "../Lib/utils.js";
 import cloudinary from "../Lib/cloudinary.js";
+
 export const signup =async (req, res) => {
  try
  {
@@ -50,17 +51,13 @@ mustInclude += '._';
    const salt = await bcrypt.genSalt(10);
    const hashedPassword = await bcrypt.hash(password, salt);
    const newUser=new User({email,fullName,password:hashedPassword,userName});
-   console.log(newUser);
+    
    if(newUser)
    {
     generateToken(newUser._id,res);
     await newUser.save();
-    res.status(201).json({_id:newUser._id,
-      fullName:newUser.fullName,
-      userName:newUser.userName,
-    email:newUser.email,
-    profilePic:newUser.profilePic,
-    });
+    const { password, ...safeUser } = user.toObject();
+    res.status(201).json({user:safeUser});
    }
    else
    {
@@ -74,6 +71,7 @@ mustInclude += '._';
  }
   
 };
+
 export const login =async (req, res) => {
   const {email,password}=req.body;
   try{
@@ -88,14 +86,11 @@ export const login =async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
      generateToken(user._id,res);
-     console.log(req.cookies.jwt);
-    return res.status(200).json({
-        id: user._id,
-        userName:user.userName,
-        fullName: user.fullName,
-        email: user.email,
-        profilePic: user.profilePic
-      });
+     if(user)
+     {
+    const { password, ...safeUser } = user.toObject();
+      return res.status(200).json({user:safeUser});
+     }
   }catch(error)
   {
     console.log("Error in Login controller!",error.message);
@@ -113,7 +108,7 @@ export const logout = (req, res) => {
     return res.status(500).json({ message: "Internal server error!" });
   }
 };
-export const updateProfile=async (req,res)=>{
+export const updateProfileByUpload=async (req,res)=>{
   try {
     const {profilePic}=req.body;
     const userId=req.user._id;
@@ -125,7 +120,7 @@ export const updateProfile=async (req,res)=>{
     const updatedUser=await User.findByIdAndUpdate(userId,{profilePic:uploadResponse.secure_url},{new:true});
     return res.status(200).json(updatedUser);
   } catch (error) {
-    console.log("Error in update profile:",error);
+    console.log("Error in updateProfileByUpload controller:",error);
     return res.status(500).json({message:"Internal server error"});
   }
 }
@@ -137,5 +132,20 @@ export const checkAuth=async (req,res)=>{
   {
     console.log("Error in checkAuth controller:",error);
     return res.status(500).json({message:"Internal Server Error"});
+  }
+}
+export const updateProfile=async (req,res)=>{ 
+  try {
+    const {user,URL}=req.body;
+    const userId=user._id;
+    const updatedUser=await User.findByIdAndUpdate(userId,{profilePic:URL},{new:true});
+    if(!updatedUser)
+    {
+      return res.status(404).json({message:"Failed to update profile!"});
+    }
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log("Error in updateProfile controller:",error);
+    return res.status(500).json({message:"Internal server error"});
   }
 }

@@ -1,22 +1,11 @@
 import User from "../Models/user.model.js";
 import Message from "../Models/message.model.js";
 import cloudinary from "../Lib/cloudinary.js";
-// import Message from "../Models/message.model.js";
-export const getUsersForSidebar=async(req,res)=>{
-try{
-    const loggedInUser=req.user._id;
-    const filteredUsers=await User.find({id:{$ne:loggedInUser}}).select("-password");
-    return res.status(200).json(filteredUsers);
-}catch(error)
-{
-    console.log("Error in getUsersForSidebar controller :",error);
-    return res.status(500),json({message:"Internal Server error!"});
-}
-}
+import {getSocketIdByUserId,io} from "../Lib/socket.js";
 export const getMessages=async (req,res)=>
 {
     try {
-        const {id:userToChatId}=req.params.id;
+        const {id:userToChatId}=req.params;
         const myId=req.user._id;
         const messages = await Message.find({
           $or: [
@@ -45,6 +34,11 @@ export const sendMessage=async(req,res)=>{
     await newMessage.save();
 
     //todo:socketio real time functionality
+    const receiverSocketId = getSocketIdByUserId(receiverId);
+    if (receiverSocketId) {
+      console.log("Emitting newMessage to socket ID:", newMessage);
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
 
     res.status(201).json(newMessage);
   } catch (error) {

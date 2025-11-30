@@ -142,7 +142,6 @@ export const useMessageStore=create((set,get)=>({
   subscribeToMessages: () => {
      const { selectedUser } = get();
     if (!selectedUser) return;
-    console.log(" subscribeToMessages fired. Selected user: ", selectedUser);
     const socket = useAuthStore.getState().socket;
      if (!socket) {
     return;
@@ -150,7 +149,6 @@ export const useMessageStore=create((set,get)=>({
   
     socket.on("newMessage", (newMessage) => {
       const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
-      console.log("Received newMessage via socket:", newMessage, "Is from selected user:", isMessageSentFromSelectedUser);
       if (!isMessageSentFromSelectedUser) return;
       const {messages}= get();
       set({

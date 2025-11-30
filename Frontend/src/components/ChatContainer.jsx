@@ -78,7 +78,7 @@ export default function ChatContainer() {
     <div className="flex flex-col h-full w-full bg-base-200 border-l border-base-300">
 
       {/* 1. HEADER (Fixed Height) */}
-      <div className="z-100 px-5 py-4 flex items-center gap-3 bg-base-100 border-b border-base-300 shrink-0">
+      <div className="z-10 border-t-2  px-5 py-4 flex items-center gap-3 bg-base-100 border-b border-base-300 shrink-0">
         <ChevronLeft 
         size={30}
         className="cursor-pointer"

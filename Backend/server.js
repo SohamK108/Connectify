@@ -12,8 +12,8 @@ import swaggerDocument from './swagger-output.json' assert { type: 'json' };
 import {app,server} from "./Lib/socket.js";
 import mongoose from "mongoose";
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
-app.use(express.json()); // Required to parse JSON request body
-app.use(express.urlencoded({ extended: true })); // Optional: for handling form-urlencoded data
+app.use(express.json({ limit: "10mb" })); 
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
 dotenv.config();
 app.use(express.json());

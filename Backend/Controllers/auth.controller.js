@@ -56,7 +56,7 @@ mustInclude += '._';
    {
     generateToken(newUser._id,res);
     await newUser.save();
-    const { password, ...safeUser } = user.toObject();
+    const { password, ...safeUser } = newUser.toObject();
     res.status(201).json({user:safeUser});
    }
    else

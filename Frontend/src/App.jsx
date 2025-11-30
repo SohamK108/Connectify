@@ -24,9 +24,6 @@ function App() {
  useEffect(() => {
   checkAuth(); 
 }, [checkAuth]);
-// useEffect(() => {
-//   console.log(authUser)
-// }, [authUser])
 
 useEffect(() => { 
   if (theme === 'dark') {
